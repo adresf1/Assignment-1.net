@@ -11,6 +11,12 @@ public class ListUsersView
     {
         this.userRepository = userRepository;
     }
+
+    public IQueryable<User> GetMany()
+    {
+        return userRepository.GetMany();
+        
+    }
     
     
 }

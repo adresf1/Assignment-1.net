@@ -13,9 +13,19 @@ public class ManagePostView
         
     }
 
-    public Task UpdateAsync(Post post)
+    public Task UpdateAsync(String title, String body, int ID, int userID)
     {
+        if (title is null) throw new ArgumentNullException(nameof(title));
+        Post post = new Post()
+        {
+            Title = title,
+            Body = body,
+            Id = ID,
+            UserId = userID
+        };
+        
        return iPostRepository.UpdateAsync(post);
     }
+    
     
 }

@@ -13,9 +13,26 @@ public class SinglePostView
         
     }
 
-    Task<Post> GetSingleAsync(int id)
+    public async Task<Post> GetSingleAsync(int id)
     {
-        return IpostRepository.GetSingleAsync(id);
+        if (id <= 0) // Check if id is valid
+        {
+            Console.WriteLine("No valid post id provided");
+            return null;  
+        }
+
+        
+        Post post = await IpostRepository.GetSingleAsync(id);
+        
+
+        if (post == null)
+        {
+            Console.WriteLine($"No post found with id {id}");
+            return null;
+        }
+
+        return post;
+    }
+        
     }
     
-}

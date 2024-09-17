@@ -12,9 +12,20 @@ public class ManageUserView
         this.userRepository = userRepository;
     }
 
-    public Task UpdateAsync(User user)
+    public Task UpdateAsync(String username, String password, int userId)
     {
+        if (username == null){ throw new ArgumentNullException(nameof(username));}
+
+        User user = new User()
+        {
+            Username = username,
+            Password = password,
+            Id = userId
+        };
         return userRepository.UpdateAsync(user);
     }
+    
+       
+    
     
 }

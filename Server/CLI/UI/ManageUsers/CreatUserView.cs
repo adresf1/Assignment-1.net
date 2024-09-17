@@ -3,39 +3,46 @@ using RepositoryContracts;
 
 namespace CLI.UI.ManageUsers;
 
-public class CreatUserView
+public class CreateUserView
 {
-    public readonly IUserRepository userRepository;
+    private readonly IUserRepository userRepository;
 
-    public CreatUserView(IUserRepository userRepository)
+    public CreateUserView(IUserRepository userRepository)
     {
         this.userRepository = userRepository;
     }
-    
-    private async Task AddUserAsync(string name, string password)
+
+    public async Task AddUserAsync(string name, string password)
     {
+        
         if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
         {
-            throw new ArgumentException("Name and password are required.");
+            Console.WriteLine("Name and password cannot be empty!");
+            return;
         }
 
-        // Create user object
-        User user = new User
+        while (userRepository.GetMany().Any(x => x.Username == name))
+        {
+            Console.WriteLine("Username already exists!");
+            Console.WriteLine("Please enter a different username!");
+            name = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Username cannot be empty!");
+                Console.WriteLine("Please enter a different username!");
+            }
+        }
+
+       
+        var user = new User
         {
             Username = name,
-            Password = password
+            Password = password,
         };
 
-        var existingUser = await userRepository.GetSingleAsync(user.Id);
-        
-        if (existingUser.Username != null)
-        {
-            // Throw an exception if the user already exists
-            throw new InvalidOperationException("A user with this username already exists.");
-        }
-        
-        
-        User created = await userRepository.AddAsync(user);
+        User createdUser = await userRepository.AddAsync(user);
+        Console.WriteLine($"User {createdUser.Username} created with id {createdUser.Id}");
+
     }
-    
 }
