@@ -15,27 +15,25 @@ public class CreatPostView
     }
 
     
-    public async Task<Post> addpostAsync(string title, string body, int userId, int ID)
+    public async Task addpostAsync(string title, string body, int userId)
     {
         if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(body))
         {
             Console.WriteLine("Title and body cannot be empty!");
-            return null;
+            
         }
 
         Post post = new Post
         {
             Title = title,
             Body = body,
-            UserId = userId,
-            Id = ID
+            UserId = userId
         };
     
         // Add post to database or in-memory collection
         await postRepo.AddAsync(post);  // Await the async method
 
-        // Simulate asynchronous database operation and return the post
-        return post;  // No need for Task.FromResult, since you're already in an async method
+       
     }
 
    

@@ -12,9 +12,8 @@ public class ListPostView
         this.iPostRepository = IpostRepository;
     }
 
-    public IQueryable<Post> ListPosts()
+    public List<Post> ListPosts()
     {
-        var posts = iPostRepository.GetMany();
-        return posts ?? Enumerable.Empty<Post>().AsQueryable(); 
+       return iPostRepository.GetMany().ToList();
     }
 }

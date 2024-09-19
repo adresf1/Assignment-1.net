@@ -13,14 +13,14 @@ public class ManagePostView
         
     }
 
-    public Task UpdateAsync(String title, String body, int ID, int userID)
+    public Task UpdateAsync(String title, String body, int userID)
     {
         if (title is null) throw new ArgumentNullException(nameof(title));
         Post post = new Post()
         {
             Title = title,
             Body = body,
-            Id = ID,
+       
             UserId = userID
         };
         

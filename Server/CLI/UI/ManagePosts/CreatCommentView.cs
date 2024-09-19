@@ -12,18 +12,14 @@ public class CreatCommentView
         _commentRepostory = commentRepostory;
     }
 
-    public async Task<Comment> AddAsync(int id, String body)
+    public async Task<Comment> AddAsync(String body)
     {
-        if (id <= 0)
-        {
-            throw new ArgumentException("ID must be greater than 0", nameof(id));
-        }
+        
     
         
 
         Comment comment = new Comment
         {
-            Id = id,
             Body = body
         };
 

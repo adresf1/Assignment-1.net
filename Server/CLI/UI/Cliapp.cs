@@ -81,7 +81,7 @@ public class CliApp
                     Console.WriteLine("Enter User Id");
                     int id = int.Parse(Console.ReadLine());
                     
-                    createPostView.addpostAsync(postTitle, postContent, userId,id);
+                    createPostView.addpostAsync(postTitle, postContent, userId);
                     break;
                 
                 case "3":
@@ -94,7 +94,7 @@ public class CliApp
                     Console.WriteLine("Enter User Id: ");
                     int userID = int.Parse(Console.ReadLine());
                     
-                    createCommentView.AddAsync(postId,commentContent);
+                    createCommentView.AddAsync(commentContent);
                     break;
                 
                 case "4":
