@@ -15,9 +15,6 @@ public class CreatCommentView
     public async Task<Comment> AddAsync(String body)
     {
         
-    
-        
-
         Comment comment = new Comment
         {
             Body = body
