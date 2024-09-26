@@ -68,17 +68,17 @@ public class PostFIleReposity : IPostRepository
         string postAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postAsJson)!;
 
-        // Find the post with the matching Id and remove it
+       
         Post? postToDelete = posts.FirstOrDefault(p => p.Id == id);
 
         if (postToDelete != null)
         {
             posts.Remove(postToDelete);
 
-            // Serialize the updated list back to JSON
+           
             postAsJson = JsonSerializer.Serialize(posts);
 
-            // Write the updated JSON back to the file
+           
             await File.WriteAllTextAsync(filePath, postAsJson);
         }
         else
@@ -89,11 +89,11 @@ public class PostFIleReposity : IPostRepository
 
     public async Task<Post> GetSingleAsync(int id)
     {
-        // Read the existing posts from the file
+       
         string postAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postAsJson)!;
 
-        // Find and return the post with the matching Id
+       
         Post? post = posts.FirstOrDefault(p => p.Id == id);
 
         return post ?? throw new KeyNotFoundException($"Post with Id {id} not found.");
@@ -101,11 +101,11 @@ public class PostFIleReposity : IPostRepository
 
     public IQueryable<Post> GetMany()
     {
-        // Read the existing posts from the file
-        string postAsJson = File.ReadAllText(filePath); // Non-async since IQueryable should be fast for small data
+       
+        string postAsJson = File.ReadAllText(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postAsJson)!;
 
-        // Return the list as an IQueryable
+        
         return posts.AsQueryable();
     }
 }

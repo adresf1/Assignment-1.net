@@ -2,8 +2,9 @@
 
 using CLI.UI;
 using FileRepositories;
-using InMemoryRepositories;
+
 using RepositoryContracts;
+
 
 Console.WriteLine("Starting...");
 ICommentRepostory commentRepostory = new CommentFileRepository();
@@ -13,3 +14,5 @@ IPostRepository postRepository = new PostFIleReposity();
 CliApp cliapp = new CliApp( userRepository, commentRepostory,postRepository );
 
 await cliapp.StartAsync();
+
+    
