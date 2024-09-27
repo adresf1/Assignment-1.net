@@ -12,8 +12,12 @@ public class ListPostView
         this.iPostRepository = IpostRepository;
     }
 
-    public List<Post> ListPosts()
+    public async Task ListPosts()
     {
-       return iPostRepository.GetMany().ToList();
+        var posts = iPostRepository.GetMany();
+        foreach (var post in posts)
+        {
+            Console.WriteLine(post.tostring());
+        }
     }
 }

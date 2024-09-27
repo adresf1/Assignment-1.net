@@ -12,10 +12,13 @@ public class ListUsersView
         this.userRepository = userRepository;
     }
 
-    public IQueryable<User> GetMany()
+    public async Task GetMany()
     {
-        return userRepository.GetMany();
-        
+        var users = userRepository.GetMany();
+        foreach (var user in users)
+        {
+            Console.WriteLine(user.tostring());
+        }
     }
     
     
