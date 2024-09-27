@@ -14,7 +14,7 @@ public class CliApp
     private readonly CreateUserView createUserView;
     private readonly ListUsersView listUsersView;
     private readonly ManageUserView manageUsersView;
-
+    private readonly ListCommentView listCommentView;
     private readonly CreatPostView createPostView;
     private readonly ListPostView listPostsView;
     private readonly ManagePostView managePostsView;
@@ -154,15 +154,15 @@ public class CliApp
         listUsersView.GetMany();
     }
 
-    // Centralized logic for listing posts
+   
     private void ListPosts()
     {
         listPostsView.ListPosts();
     }
 
-    // Stub method for listing comments (you would need to implement it)
+    
     private void ListComments()
     {
-        Console.WriteLine("Listing comments is not implemented yet.");
+        listCommentView.ListComments();
     }
 }
