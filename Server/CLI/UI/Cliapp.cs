@@ -37,7 +37,6 @@ public class CliApp
         manageUsersView = new ManageUserView(this.userRepository);
 
         createCommentView = new CreatCommentView(this.commentRepository);
-
     }
 
     public async Task StartAsync()
@@ -59,13 +58,17 @@ public class CliApp
 
             switch (option)
             {
+             
                 case "1":
                     Console.WriteLine("Enter User Name: ");
                     string userName = Console.ReadLine();
                     
                     Console.WriteLine("Enter Password: ");
                     string password = Console.ReadLine();
-                    createUserView.AddUserAsync(userName, password);
+    
+                    // Await the add operation
+                    await createUserView.AddUserAsync(userName, password);
+                    Console.WriteLine("User added successfully!");
                     break;
                 
                 case "2":
@@ -75,13 +78,12 @@ public class CliApp
                     Console.WriteLine("Enter Post Content: ");
                     string postContent = Console.ReadLine();
                     
-                    Console.WriteLine("Enter User Id");
+                    Console.WriteLine("Enter User Id: ");
                     int userId = int.Parse(Console.ReadLine());
                     
-                    Console.WriteLine("Enter User Id");
-                    int id = int.Parse(Console.ReadLine());
-                    
-                    createPostView.addpostAsync(postTitle, postContent, userId);
+                    // Add post and save it to file
+                    await createPostView.addpostAsync(postTitle, postContent, userId);
+                    Console.WriteLine("Post added successfully!");
                     break;
                 
                 case "3":
@@ -92,22 +94,35 @@ public class CliApp
                     int postId = int.Parse(Console.ReadLine());
                     
                     Console.WriteLine("Enter User Id: ");
-                    int userID = int.Parse(Console.ReadLine());
-                    
-                    createCommentView.AddAsync(commentContent);
-                    break;
-                
-                case "4":
-                   listPostsView.ListPosts();
-break;
-                
-            }
-            
-            }
+                    int commentUserId = int.Parse(Console.ReadLine());
 
+                    // Add comment and save it to file
+                    await createCommentView.AddAsync(commentContent);
+                    Console.WriteLine("Comment added successfully!");
+                    break;
+
+                case "4":
+                    // List all users
+                    listUsersView.GetMany();
+                    break;
+
+                case "5":
+                    // List all posts
+                    listPostsView.ListPosts();
+                    break;
+
+                case "6":
+                    commentRepository.GetMany();
+                    break;
+
+                case "7":
+                    running = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid option, please try again.");
+                    break;
+            }
         }
-            
-        
-        
     }
-    ;
+}
