@@ -1,77 +1,64 @@
 ﻿using System.Text.Json;
+using ApiContracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryContracts;
 
 namespace WebAPI.Controllers;
  [ApiController]
     [Route("api/[controller]")]
 public class CommentController : ControllerBase
 {
-        private readonly string _commentPath = 
-            @"C:\Users\adres\RiderProjects\Assignment 1.net\Server\CLI\bin\Debug\net8.0\comments.json";
+       private ICommentRepostory _commentRepostory;
 
+       public CommentController(ICommentRepostory commentRepostory)
+       {
+           _commentRepostory = commentRepostory;
+       }
+       
         [HttpGet]
-        public ActionResult<IEnumerable<Comment>> GetAllComments()
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllcomments()
         {
-            if (!System.IO.File.Exists(_commentPath))
-            {
-                return NotFound("The comments file could not be found.");
-            }
+            
+            var comments = await Task.Run(() => _commentRepostory.GetMany().ToList());
 
-            var jsonData = System.IO.File.ReadAllText(_commentPath);
-            var comments = JsonSerializer.Deserialize<List<Comment>>(jsonData) ?? new List<Comment>();
-
-            if (comments.Count == 0)
+            if (comments == null || !comments.Any())
             {
                 return NotFound("No comments found.");
             }
 
-            return Ok(comments);
+            // Map post entities to Postdtos
+            var commentDto = comments.Select(c => new CommentDTO(c.Id,c.Body)).ToList();
+            return Ok(commentDto);
         }
 
         [HttpPost]
-        public ActionResult<Comment> AddComment(Comment comment)
+        public ActionResult<CommentDTO> AddComment(Comment comment)
         {
-            if (!System.IO.File.Exists(_commentPath))
+            try
             {
-                return NotFound("The comments file could not be found.");
+                var createdcommentt = _commentRepostory.AddAsync(comment);
+                var commentDto = new CommentDTO(createdcommentt.Id,createdcommentt.Body);
+                return CreatedAtAction(nameof(GetAllcomments), new { id = commentDto.Id }, commentDto);
             }
-
-            var jsonData = System.IO.File.ReadAllText(_commentPath);
-            var comments = JsonSerializer.Deserialize<List<Comment>>(jsonData) ?? new List<Comment>();
-
-            comment.Id = comments.Any() ? comments.Max(c => c.Id) + 1 : 1; // Assign a new ID
-            comments.Add(comment);
-
-            // Write the updated list of comments back to the file
-            System.IO.File.WriteAllText(_commentPath, JsonSerializer.Serialize(comments));
-
-            return CreatedAtAction(nameof(GetAllComments), new { id = comment.Id }, comment);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]
         public ActionResult DeleteComment(int id)
         {
-            if (!System.IO.File.Exists(_commentPath))
+            try
             {
-                return NotFound("The comments file could not be found.");
+
             }
-
-            var jsonData = System.IO.File.ReadAllText(_commentPath);
-            var comments = JsonSerializer.Deserialize<List<Comment>>(jsonData) ?? new List<Comment>();
-
-            var commentIndex = comments.FindIndex(c => c.Id == id);
-            if (commentIndex == -1)
+            catch (Exception e)
             {
-                return NotFound("Comment not found");
+                Console.WriteLine(e);
+                throw;
             }
-
-            comments.RemoveAt(commentIndex);
-
-            // Write the updated list of comments back to the file
-            System.IO.File.WriteAllText(_commentPath, JsonSerializer.Serialize(comments));
-
-            return NoContent(); // 204 status code for successful deletion
         }
 
         [HttpPut("{id:int}")]

@@ -17,7 +17,7 @@ public class ListUsersView
         var users = userRepository.GetMany();
         foreach (var user in users)
         {
-            Console.WriteLine(user.tostring());
+            Console.WriteLine(user.ToString());
         }
     }
     

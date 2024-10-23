@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
+using ApiContracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryContracts;
 
 namespace WebAPI.Controllers
 {
@@ -8,118 +10,87 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly string _userFilePath = 
-            @"C:\Users\adres\RiderProjects\Assignment 1.net\Server\CLI\bin\Debug\net8.0\users.json";
-        
-        [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAllUsers()
+        private readonly IUserRepository _userRepository;
+
+        public UserController(IUserRepository userRepository)
         {
-            if (!System.IO.File.Exists(_userFilePath))
-            {
-                return NotFound("The users file could not be found.");
-            }
+            _userRepository = userRepository;
+        }
 
-            var jsonData = System.IO.File.ReadAllText(_userFilePath);
-            var users = JsonSerializer.Deserialize<List<User>>(jsonData);
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        {
+            var users = await Task.Run(() => _userRepository.GetMany().ToList());
 
-            if (users == null || users.Count == 0)
+            if (users == null || !users.Any())
             {
                 return NotFound("No users found.");
             }
 
-            return Ok(users);
+            // Map User entities to UserDTOs
+            var userDTOs = users.Select(u => new UserDTO(u.Id, u.Username)).ToList();
+            return Ok(userDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<User> GetUserById(int id)
+        public async Task<ActionResult<UserDTO>> GetUserById(int id)
         {
-            if (!System.IO.File.Exists(_userFilePath))
+            try
             {
-                return NotFound("The users file could not be found.");
+                var user = await _userRepository.GetSingleAsync(id);
+                var userDto = new UserDTO(user.Id, user.Username);
+                return Ok(userDto);
             }
-
-            var jsonData = System.IO.File.ReadAllText(_userFilePath);
-            var users = JsonSerializer.Deserialize<List<User>>(jsonData);
-
-            if (users == null) return NotFound("No users found.");
-
-            var user = users.FirstOrDefault(p => p.Id == id);
-            return user is not null ? Ok(user) : NotFound("User not found");
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult<User> PostUser(User user)
+        public async Task<ActionResult<UserDTO>> PostUser(User user)
         {
-            if (!System.IO.File.Exists(_userFilePath))
+            try
             {
-                return NotFound("The users file could not be found.");
+                var createdUser = await _userRepository.AddAsync(user);
+                var userDto = new UserDTO(createdUser.Id, createdUser.Username);
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, userDto);
             }
-
-            var jsonData = System.IO.File.ReadAllText(_userFilePath);
-            var users = JsonSerializer.Deserialize<List<User>>(jsonData) ?? new List<User>();
-
-            user.Id = users.Any() ? users.Max(p => p.Id) + 1 : 1; // Assign a new ID
-            users.Add(user);
-
-            // Write the updated list of users back to the file
-            System.IO.File.WriteAllText(_userFilePath, JsonSerializer.Serialize(users));
-
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<User> PutUser(int id, User updatedUser)
+        public async Task<ActionResult<UserDTO>> PutUser(int id, User updatedUser)
         {
-            if (!System.IO.File.Exists(_userFilePath))
+            try
             {
-                return NotFound("The users file could not be found.");
+                updatedUser.Id = id; 
+                await _userRepository.UpdateAsync(updatedUser);
+                var userDto = new UserDTO(updatedUser.Id, updatedUser.Username);
+                return Ok(userDto);
             }
-
-            var jsonData = System.IO.File.ReadAllText(_userFilePath);
-            var users = JsonSerializer.Deserialize<List<User>>(jsonData);
-
-            if (users == null) return NotFound("No users found.");
-
-            var userIndex = users.FindIndex(p => p.Id == id);
-            if (userIndex == -1)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("User not found");
+                return NotFound(ex.Message);
             }
-
-            updatedUser.Id = id; // Ensure the ID remains unchanged
-            users[userIndex] = updatedUser;
-
-            // Write the updated list of users back to the file
-            System.IO.File.WriteAllText(_userFilePath, JsonSerializer.Serialize(users));
-
-            return Ok(updatedUser);
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
-            if (!System.IO.File.Exists(_userFilePath))
+            try
             {
-                return NotFound("The users file could not be found.");
+                await _userRepository.DeleteAsync(id);
+                return NoContent(); // 204 status code, meaning successfully deleted
             }
-
-            var jsonData = System.IO.File.ReadAllText(_userFilePath);
-            var users = JsonSerializer.Deserialize<List<User>>(jsonData);
-
-            if (users == null) return NotFound("No users found.");
-
-            var userIndex = users.FindIndex(p => p.Id == id);
-            if (userIndex == -1)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("User not found");
+                return NotFound(ex.Message);
             }
-
-            users.RemoveAt(userIndex);
-
-            // Write the updated list of users back to the file
-            System.IO.File.WriteAllText(_userFilePath, JsonSerializer.Serialize(users));
-
-            return NoContent(); // 204 status code, meaning successfully deleted
         }
     }
 }
+

@@ -6,9 +6,9 @@ public class User
     public string Username { get; set; }
     public string Password { get; set; }
 
-    public string tostring()
+    public override string ToString()
     {
-        return $"User id {Id} username {Username} password {Password}";
+        return $"User id {Id} username {Username}";
     }
-    
 }
+    
