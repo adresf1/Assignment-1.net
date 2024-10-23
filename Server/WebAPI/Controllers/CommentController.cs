@@ -33,12 +33,14 @@ public class CommentController : ControllerBase
         }
 
         [HttpPost]
-        public ActionResult<CommentDTO> AddComment(Comment comment)
+        public async Task<ActionResult<CommentDTO>> AddComment([FromBody] Comment comment)
         {
             try
             {
-                var createdcommentt = _commentRepostory.AddAsync(comment);
-                var commentDto = new CommentDTO(createdcommentt.Id,createdcommentt.Body);
+                var createdComment = await _commentRepostory.AddAsync(comment);
+
+                var commentDto = new CommentDTO(createdComment.Id, createdComment.Body);
+
                 return CreatedAtAction(nameof(GetAllcomments), new { id = commentDto.Id }, commentDto);
             }
             catch (Exception e)
@@ -48,44 +50,36 @@ public class CommentController : ControllerBase
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult DeleteComment(int id)
+        public async Task<ActionResult> DeleteComment(int id)
         {
             try
             {
+                await _commentRepostory.DeleteAsync(id);
+                return NoContent();
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+               return NotFound(e.Message);
             }
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<Comment> UpdateComment(int id, Comment updatedComment)
+        public async Task<ActionResult<Comment>> UpdateComment(int id, Comment updatedComment)
         {
-            if (!System.IO.File.Exists(_commentPath))
+            try
             {
-                return NotFound("The comments file could not be found.");
+                updatedComment.Id = id;
+                await _commentRepostory.UpdateAsync(updatedComment);
+                var postDTO = new CommentDTO(updatedComment.Id, updatedComment.Body);
+                return Ok(postDTO);
             }
-
-            var jsonData = System.IO.File.ReadAllText(_commentPath);
-            var comments = JsonSerializer.Deserialize<List<Comment>>(jsonData) ?? new List<Comment>();
-
-            var commentIndex = comments.FindIndex(c => c.Id == id);
-            if (commentIndex == -1)
+            catch (Exception e)
             {
-                return NotFound("Comment not found");
+               return NotFound(e.Message);
             }
-
-            updatedComment.Id = id; // Ensure the ID remains unchanged
-            comments[commentIndex] = updatedComment;
-
-            // Write the updated list of comments back to the file
-            System.IO.File.WriteAllText(_commentPath, JsonSerializer.Serialize(comments));
-
-            return Ok(updatedComment);
+            
         }
-    }
-
+}
+        
     
