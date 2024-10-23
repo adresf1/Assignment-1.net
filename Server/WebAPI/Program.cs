@@ -3,21 +3,21 @@ using RepositoryContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Tilføjer services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register repository implementations for dependency injection
+// Register Repository
 builder.Services.AddScoped<IPostRepository, PostFIleReposity>();
 builder.Services.AddScoped<IUserRepository, UserFileReposity>();
 builder.Services.AddScoped<ICommentRepostory, CommentFileRepository>();
 
-// Add controllers support
+// tilføjer controllersne 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,7 +26,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable routing and map the controllers
+
 app.UseRouting();
 
 app.UseAuthorization();
