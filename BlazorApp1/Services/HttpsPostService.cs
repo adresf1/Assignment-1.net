@@ -2,11 +2,25 @@
 
 namespace BlazorApp1.Services;
 
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using ApiContracts;
+
 public class HttpsPostService : IPostService
 {
-    public Task<PostDTO> AddAsync(PostDTO post)
+    private readonly HttpClient _httpClient;
+
+    public HttpsPostService(HttpClient httpClient)
     {
-        throw new NotImplementedException();
+        _httpClient = httpClient;
+    }
+
+    public async Task<CreatPostDTO> AddAsync(CreatPostDTO post)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/posts", post);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<CreatPostDTO>();
     }
 
     public Task UpdateAsync(PostDTO post)
@@ -24,8 +38,10 @@ public class HttpsPostService : IPostService
         throw new NotImplementedException();
     }
 
-    public IQueryable<PostDTO> GetMany()
+    public async Task<List<PostsDTO>> GetMany()
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.GetAsync("api/posts");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<PostsDTO>>();
     }
 }
