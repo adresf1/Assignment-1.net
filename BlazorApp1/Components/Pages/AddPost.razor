@@ -1,0 +1,57 @@
+﻿@page "/AddPost"
+@using ApiContracts
+@inject HttpClient HttpClient
+
+<PageTitle>Post</PageTitle>
+<h3>Opret ny post</h3>
+
+<EditForm Model="post" OnValidSubmit="HandlePost">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Titel:</label>
+        <InputText @bind-Value="post.Title" />
+    </div>
+
+    <div>
+        <label>Indhold:</label>
+        <InputText @bind-Value="post.Body" />
+    </div>
+
+
+    <button type="submit">Opret post</button>
+</EditForm>
+
+@if (postMessage != null)
+{
+    <p>@postMessage</p>
+}
+
+@code {
+    // Initialize PostDTO with constructor parameters
+    private PostDTO post = new PostDTO(0, null, null, 0);
+    private string postMessage;
+
+    private async Task HandlePost()
+    {
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("api/posts", post);
+
+            if (response.IsSuccessStatusCode)
+            {
+                postMessage = "Post oprettet succesfuldt!";
+                post = new PostDTO(0, null, null, 0); // Nulstil formularen
+            }
+            else
+            {
+                postMessage = "Oprettelse mislykkedes. Prøv igen.";
+            }
+        }
+        catch (Exception ex)
+        {
+            postMessage = $"Fejl: {ex.Message}";
+        }
+    }
+}

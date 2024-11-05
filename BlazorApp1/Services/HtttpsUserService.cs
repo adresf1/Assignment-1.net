@@ -12,7 +12,7 @@ public class HtttpsUserService : IUserService
         this.client = client;
     }
     
-    public async Task<UserDTO> AddUserAsync(CreateUserDto request)
+    public async Task<UserDTO> AddUserAsync(UserDTO request)
     {
         HttpResponseMessage httpResponse = await client.PostAsJsonAsync("users", request);
         string response = await httpResponse.Content.ReadAsStringAsync();
@@ -47,7 +47,7 @@ public class HtttpsUserService : IUserService
         })!;
     }
 
-    public async Task UpdateUserAsync(int id, UpdateUserDto request)
+    public async Task UpdateUserAsync(int id, UserDTO request)
     {
         HttpResponseMessage getResponse = await client.GetAsync($"users/{id}");
         if (!getResponse.IsSuccessStatusCode)

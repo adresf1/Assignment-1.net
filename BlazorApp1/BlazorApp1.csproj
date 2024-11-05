@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Shared\ApiContracts\ApiContracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Components\Pages\addUser.razor.cs" />
+    </ItemGroup>
+
 </Project>

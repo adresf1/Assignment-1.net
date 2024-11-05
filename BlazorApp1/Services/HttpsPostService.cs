@@ -2,14 +2,14 @@
 
 namespace BlazorApp1.Services;
 
-public class HttpsCommentService : ICommentService
+public class HttpsPostService : IPostService
 {
-    public Task<CommentDTO> AddAsync(CommentDTO comment)
+    public Task<PostDTO> AddAsync(PostDTO post)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync(CommentDTO comment)
+    public Task UpdateAsync(PostDTO post)
     {
         throw new NotImplementedException();
     }
@@ -19,12 +19,12 @@ public class HttpsCommentService : ICommentService
         throw new NotImplementedException();
     }
 
-    public Task<CommentDTO> GetSingleAsync(int id)
+    public Task<PostDTO> GetSingleAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public IQueryable<CommentDTO> GetMany()
+    public IQueryable<PostDTO> GetMany()
     {
         throw new NotImplementedException();
     }
