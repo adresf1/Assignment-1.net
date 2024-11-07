@@ -1,6 +1,7 @@
 ﻿using ApiContracts;
+using BlazorApp12.Services;
 
-namespace BlazorApp1.Services;
+namespace BlazorApp12.Services;
 
 public class HttpsCommentService : ICommentService
 {

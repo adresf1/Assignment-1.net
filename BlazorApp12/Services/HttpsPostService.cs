@@ -1,6 +1,6 @@
-﻿using ApiContracts;
+﻿
 
-namespace BlazorApp1.Services;
+namespace BlazorApp12.Services;
 
 using System.Net.Http;
 using System.Net.Http.Json;

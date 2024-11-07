@@ -1,6 +1,6 @@
 ﻿using ApiContracts;
 
-namespace BlazorApp1.Services;
+namespace BlazorApp12.Services;
 
 public interface IUserService
 {
