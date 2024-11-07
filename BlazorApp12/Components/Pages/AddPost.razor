@@ -1,7 +1,8 @@
 ﻿@page "/AddPost"
 @using ApiContracts
 @using BlazorApp12.Services
-@inject HttpsPostService httpsPostService
+@inject IPostService httpsPostService
+
 
 <PageTitle>Post</PageTitle>
 <h3>Opret ny post</h3>
@@ -19,6 +20,10 @@
         <label>Indhold:</label>
         <InputText @bind-Value="post.Body" />
     </div>
+    @*<div>
+        <label>UserId:</label>
+        <InputText @bind-Value="post.UserId" />
+    </div>*@
 
     <button type="submit">Opret post</button>
 </EditForm>

@@ -1,0 +1,41 @@
+﻿@page "/"
+@using ApiContracts
+@using BlazorApp12.Services
+@inject IPostService HttpsPostService
+
+<PageTitle>Posts</PageTitle>
+
+<h1>All Posts</h1>
+
+@if (posts == null)
+{
+    <p>Loading posts...</p>
+}
+else if (posts.Any())
+{
+    <ul>
+        @foreach (var post in posts)
+        {
+            <li>
+                <h2>@post.Title</h2>
+                <p>@post.Body</p>
+                
+                @*<small>By @post.userId</small>*@
+            
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No posts available.</p>
+}
+
+@code {
+    private List<PostsDTO>? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts =  await HttpsPostService.GetMany(); 
+    }
+}
