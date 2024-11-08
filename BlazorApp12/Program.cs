@@ -16,8 +16,9 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("http://localhost:5093")
 });
 
-// Register the IPostService interface with the HttpsPostService implementation
+// Register the services interface with the HttpsPostService implementation
 builder.Services.AddScoped<IPostService, HttpsPostService>();
+builder.Services.AddScoped<IUserService, HtttpsUserService>();
 
 var app = builder.Build();
 

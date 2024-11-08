@@ -17,10 +17,9 @@ else if (posts.Any())
         @foreach (var post in posts)
         {
             <li>
-                <h2>@post.Title</h2>
+                <h4>@post.Title</h4>
                 <p>@post.Body</p>
-                
-                @*<small>By @post.userId</small>*@
+                <small>By User id: @post.userId</small>
             
             </li>
         }
@@ -36,6 +35,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        posts =  await HttpsPostService.GetMany(); 
+        posts = await HttpsPostService.GetMany();
     }
 }

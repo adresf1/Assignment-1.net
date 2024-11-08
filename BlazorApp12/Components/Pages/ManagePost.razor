@@ -1,11 +1,11 @@
-﻿@page "/AddPost"
+﻿@page "/ManagePost"
 @using ApiContracts
 @using BlazorApp12.Services
 @inject IPostService httpsPostService
 
 
 <PageTitle>Post</PageTitle>
-<h3>Opret ny post</h3>
+<h3>Manage post</h3>
 
 <EditForm Model="post" OnValidSubmit="HandlePost">
     <DataAnnotationsValidator />
@@ -20,12 +20,25 @@
         <label>Indhold:</label>
         <InputText @bind-Value="post.Body" />
     </div>
-    @*<div>
-        <label>UserId:</label>
-        <InputText @bind-Value="post.UserId" />
-    </div>*@
-
+    <div>
+        <label>User ID:</label>
+        <InputNumber @bind-Value=post.UserId /> 
+    </div>
+    
     <button type="submit">Opret post</button>
+    
+</EditForm>
+<EditForm Model="post" OnValidSubmit="DeletePost">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Post ID:</label>
+        <InputNumber @bind-Value="post.Id" />
+    </div>
+
+    <button type="submit"> Delete post</button>
+
 </EditForm>
 
 @if (postMessage != null)
@@ -42,12 +55,26 @@
         try
         {
             await httpsPostService.AddAsync(post);
-            postMessage = "Post oprettet med succes!";
+            postMessage = "Post oprettet med succes with post id!"  + post.Id;
             post = new CreatPostDTO(); // Clear the form after successful submission
         }
         catch (Exception ex)
         {
             postMessage = $"Fejl ved oprettelse af post: {ex.Message}";
+        }
+    }
+    
+    public async Task DeletePost()
+    {
+        try
+        {
+            await httpsPostService.DeleteAsync(post.Id);
+            postMessage = "Post slettet med succes with post id!"  + post.Id;
+            post = new CreatPostDTO(); // Clear the form after successful submission
+        }
+        catch (Exception ex)
+        {
+            postMessage = $"Fejl ved sletning af post: {ex.Message}";
         }
     }
 }

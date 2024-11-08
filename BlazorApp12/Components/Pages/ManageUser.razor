@@ -1,0 +1,57 @@
+﻿@page "/ManageUser"
+@using ApiContracts
+@using BlazorApp12.Services
+@rendermode InteractiveServer
+@inject IUserService HttpsUserService
+
+<h3>Add User</h3>
+
+@if (errorMessage != null)
+{
+    <p style="color: red">@errorMessage</p>
+}
+
+@if (successMessage != null)
+{
+    <p style="color: green">@successMessage</p>
+}
+
+<EditForm Model="newuser" OnValidSubmit="AddUserSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    
+    <div>
+        <label for="username">Username:</label>
+        <InputText id="username" @bind-Value="newuser.Username" />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" @bind-Value="newuser.Password" />
+    </div>
+
+   
+
+    <button type="submit">Add User</button>
+</EditForm>
+
+@code {
+    private AddUserDTO newuser = new AddUserDTO(); // Initialize newuser
+    private string? errorMessage;
+    private string? successMessage;
+
+    private async Task AddUserSubmit()
+    {
+        try
+        {
+            await HttpsUserService.AddUserAsync(newuser);
+            successMessage = "User added successfully with user id !" + newuser.UserId;
+            newuser = new AddUserDTO(); // Clear the form after successful submission
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error adding user: {ex.Message}";
+        }
+    }
+}

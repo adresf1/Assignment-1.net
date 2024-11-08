@@ -13,9 +13,9 @@ public class HtttpsUserService : IUserService
         this.client = client;
     }
     
-    public async Task<UserDTO> AddUserAsync(UserDTO request)
+    public async Task<UserDTO> AddUserAsync(AddUserDTO request)
     {
-        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("users", request);
+        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("api/User", request);
         string response = await httpResponse.Content.ReadAsStringAsync();
         if (!httpResponse.IsSuccessStatusCode)
         {

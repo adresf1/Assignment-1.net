@@ -5,7 +5,7 @@ namespace BlazorApp12.Services;
 public interface IUserService
 {
     // Create: Tilføjer en ny bruger baseret på data fra CreateUserDto
-    Task<UserDTO> AddUserAsync(UserDTO request);
+    Task<UserDTO> AddUserAsync(AddUserDTO request);
 
     // Read: Henter en bruger baseret på et specifikt ID
     Task<UserDTO> GetUserByIdAsync(int id);

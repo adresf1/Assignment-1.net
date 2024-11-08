@@ -30,7 +30,9 @@ public class HttpsPostService : IPostService
 
     public Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var response = _httpClient.DeleteAsync($"api/posts/{id}");
+        response.Result.EnsureSuccessStatusCode();
+        return Task.CompletedTask;
     }
 
     public Task<PostDTO> GetSingleAsync(int id)
@@ -40,8 +42,22 @@ public class HttpsPostService : IPostService
 
     public async Task<List<PostsDTO>> GetMany()
     {
-        var response = await _httpClient.GetAsync("api/posts");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<List<PostsDTO>>();
+        try
+        {
+            var response = await _httpClient.GetAsync("api/posts");
+        
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<PostsDTO>>() ?? new List<PostsDTO>();
+            }
+            else
+            {
+                return new List<PostsDTO>();  
+            }
+        }
+        catch (Exception ex)
+        {
+            return new List<PostsDTO>();  
+        }
     }
 }
