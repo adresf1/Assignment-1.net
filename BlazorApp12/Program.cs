@@ -2,7 +2,9 @@
 using BlazorApp12.Components;
 
 using BlazorApp12.Components;
+using BlazorApp12.Components.Login;
 using BlazorApp12.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,7 @@ builder.Services.AddScoped(sp => new HttpClient
 // Register the services interface with the HttpsPostService implementation
 builder.Services.AddScoped<IPostService, HttpsPostService>();
 builder.Services.AddScoped<IUserService, HtttpsUserService>();
-
+builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,3 +39,4 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+

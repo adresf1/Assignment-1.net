@@ -85,4 +85,12 @@ public class UserFileReposity : IUserRepository
       return users.AsQueryable();
       
     }
+
+    public Task<User> GetByUsernameAsync(string username)
+    {
+        string userasjson = File.ReadAllText(filePath);
+        List<User> users = JsonSerializer.Deserialize<List<User>>(userasjson);
+        User? user = users.FirstOrDefault(p => p.Username == username);
+        return user != null ? Task.FromResult(user) : throw new KeyNotFoundException($"Post with Id {username} not found.");
+    }
 }
