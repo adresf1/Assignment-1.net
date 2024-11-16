@@ -2,21 +2,9 @@
 @using ApiContracts
 @using BlazorApp12.Services
 @inject IPostService HttpsPostService
-@inject NavigationManager NavMgr
 
 
 
-
-<AuthorizeView>
-    <Authorized>
-        <h3>Hello, @context.User.Identity.Name</h3>
-    </Authorized>
-    <NotAuthorized>
-        lol you are not logged in!
-    </NotAuthorized>
-</AuthorizeView>
-Here you can browse interesting posts.
-<button @onclick='() => NavMgr.NavigateTo("Login")'>go to Login</button>
 
 
 <PageTitle>Posts</PageTitle>

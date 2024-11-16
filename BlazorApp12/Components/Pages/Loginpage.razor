@@ -1,0 +1,21 @@
+﻿@page "/Loginpage"
+@inject NavigationManager NavMgr
+
+<h3>Loginpage</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Hello, @context.User.Identity.Name</h3>
+    </Authorized>
+    <NotAuthorized>
+        lol you are not logged in!
+    </NotAuthorized>
+</AuthorizeView>
+Here you can browse interesting posts.
+<button @onclick='() => NavMgr.NavigateTo("Login")'>go to Login</button>
+
+
+
+@code {
+    
+}
