@@ -5,6 +5,8 @@
 
 <AuthorizeView>
     <Authorized Context="authContext"> <!-- Explicitly specify context -->
+        <h4>@authContext.User.Identity.Name,  her can you manage posts</h4>
+        
         <PageTitle>Post</PageTitle>
         <h3>Manage post</h3>
 
