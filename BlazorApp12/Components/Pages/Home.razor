@@ -2,43 +2,46 @@
 @using ApiContracts
 @using BlazorApp12.Services
 @inject IPostService HttpsPostService
+<AuthorizeView>
+    <Authorized>
+        <PageTitle>Posts</PageTitle>
 
+        <h1>All Posts</h1>
 
-
-
-
-<PageTitle>Posts</PageTitle>
-
-<h1>All Posts</h1>
-
-@if (posts == null)
-{
-    <p>Loading posts...</p>
-}
-else if (posts.Any())
-{
-    <ul>
-        @foreach (var post in posts)
+        @if (posts == null)
         {
+        <p>Loading posts...</p>
+        }
+        else if (posts.Any())
+        {
+        <ul>
+            @foreach (var post in posts)
+            {
             <li>
                 <h4>@post.Title</h4>
                 <p>@post.Body</p>
                 <small>By User id: @post.userId</small>
-            
+
             </li>
+            }
+        </ul>
         }
-    </ul>
-}
-else
-{
-    <p>No posts available.</p>
-}
+        else
+        {
+        <p>No posts available.</p>
+        }
 
-@code {
-    private List<PostsDTO>? posts;
+        @code {
+        private List<PostsDTO>? posts;
 
-    protected override async Task OnInitializedAsync()
-    {
+        protected override async Task OnInitializedAsync()
+        {
         posts = await HttpsPostService.GetMany();
-    }
-}
+        }
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>Please log in to view this content.</h1>
+    </NotAuthorized>
+</AuthorizeView>
+

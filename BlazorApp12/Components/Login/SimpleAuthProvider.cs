@@ -2,16 +2,20 @@
 using System.Text.Json;
 using ApiContracts;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
 namespace BlazorApp12.Components.Login;
 
 public class SimpleAuthProvider : AuthenticationStateProvider
 {
     private readonly HttpClient httpClient;
+    private readonly IJSRuntime jsRuntime;
+
     private ClaimsPrincipal currentClaimsPrincipal;
 
-    public SimpleAuthProvider(HttpClient httpClient)
+    public SimpleAuthProvider(HttpClient httpClient, IJSRuntime jsRuntime)
     {
+        this.jsRuntime = jsRuntime;
         this.httpClient = httpClient;
     }
 
@@ -61,13 +65,36 @@ public class SimpleAuthProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        return new AuthenticationState(currentClaimsPrincipal ?? new ());
+        string userAsJson = "";
+        try
+        {
+            userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentUser");
+        }
+        catch (InvalidOperationException e)
+        {
+            return new AuthenticationState(new());
+        }
+
+        if (string.IsNullOrEmpty(userAsJson))
+        {
+            return new AuthenticationState(new());
+        }
+
+        UserDTO userDto = JsonSerializer.Deserialize<UserDTO>(userAsJson)!;
+        List<Claim> claims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name, userDto.Username),
+            new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
+        };
+        ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
+        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
+        return new AuthenticationState(claimsPrincipal);
     }
     
-    public void Logout()
+    public async Task Logout()
     {
-        currentClaimsPrincipal = new();
-        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(currentClaimsPrincipal)));
+        await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", "");
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new())));
     }
     
 }

@@ -3,78 +3,83 @@
 @using BlazorApp12.Services
 @inject IPostService httpsPostService
 
+<AuthorizeView>
+    <Authorized Context="authContext"> <!-- Explicitly specify context -->
+        <PageTitle>Post</PageTitle>
+        <h3>Manage post</h3>
 
-<PageTitle>Post</PageTitle>
-<h3>Manage post</h3>
+        <EditForm Model="post" OnValidSubmit="HandlePost">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-<EditForm Model="post" OnValidSubmit="HandlePost">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+            <div>
+                <label>Titel:</label>
+                <InputText @bind-Value="post.Title" />
+            </div>
 
-    <div>
-        <label>Titel:</label>
-        <InputText @bind-Value="post.Title" />
-    </div>
+            <div>
+                <label>Indhold:</label>
+                <InputText @bind-Value="post.Body" />
+            </div>
+            <div>
+                <label>User ID:</label>
+                <InputNumber @bind-Value="post.UserId" />
+            </div>
 
-    <div>
-        <label>Indhold:</label>
-        <InputText @bind-Value="post.Body" />
-    </div>
-    <div>
-        <label>User ID:</label>
-        <InputNumber @bind-Value=post.UserId /> 
-    </div>
-    
-    <button type="submit">Opret post</button>
-    
-</EditForm>
-<EditForm Model="post" OnValidSubmit="DeletePost">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+            <button type="submit">Opret post</button>
+        </EditForm>
 
-    <div>
-        <label>Post ID:</label>
-        <InputNumber @bind-Value="post.Id" />
-    </div>
+        <EditForm Model="post" OnValidSubmit="DeletePost">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-    <button type="submit"> Delete post</button>
+            <div>
+                <label>Post ID:</label>
+                <InputNumber @bind-Value="post.Id" />
+            </div>
 
-</EditForm>
+            <button type="submit">Delete post</button>
+        </EditForm>
 
-@if (postMessage != null)
-{
-    <p>@postMessage</p>
-}
-
-@code {
-    private CreatPostDTO post = new CreatPostDTO();
-    private string? postMessage;
-
-    private async Task HandlePost()
-    {
-        try
+        @if (postMessage != null)
         {
-            await httpsPostService.AddAsync(post);
-            postMessage = "Post oprettet med succes with post id!"  + post.Id;
-            post = new CreatPostDTO(); // Clear the form after successful submission
+            <p>@postMessage</p>
         }
-        catch (Exception ex)
-        {
-            postMessage = $"Fejl ved oprettelse af post: {ex.Message}";
+
+        @code {
+            private CreatPostDTO post = new CreatPostDTO();
+            private string? postMessage;
+
+            private async Task HandlePost()
+            {
+                try
+                {
+                    await httpsPostService.AddAsync(post);
+                    postMessage = "Post oprettet med succes with post id!" + post.Id;
+                    post = new CreatPostDTO(); // Clear the form after successful submission
+                }
+                catch (Exception ex)
+                {
+                    postMessage = $"Fejl ved oprettelse af post: {ex.Message}";
+                }
+            }
+
+            public async Task DeletePost()
+            {
+                try
+                {
+                    await httpsPostService.DeleteAsync(post.Id);
+                    postMessage = "Post slettet med succes with post id!" + post.Id;
+                    post = new CreatPostDTO(); // Clear the form after successful submission
+                }
+                catch (Exception ex)
+                {
+                    postMessage = $"Fejl ved sletning af post: {ex.Message}";
+                }
+            }
         }
-    }
-    
-    public async Task DeletePost()
-    {
-        try
-        {
-            await httpsPostService.DeleteAsync(post.Id);
-            postMessage = "Post slettet med succes with post id!"  + post.Id;
-            post = new CreatPostDTO(); // Clear the form after successful submission
-        }
-        catch (Exception ex)
-        {
-            postMessage = $"Fejl ved sletning af post: {ex.Message}";
-        }
-    }
-}
+    </Authorized>
+    <NotAuthorized>
+        <h1>Please log in to view this content.</h1>
+    </NotAuthorized>
+</AuthorizeView>

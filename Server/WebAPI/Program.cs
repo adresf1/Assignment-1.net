@@ -3,6 +3,7 @@ using RepositoryContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Tilføjer services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

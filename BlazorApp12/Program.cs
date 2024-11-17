@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -22,6 +23,7 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<IPostService, HttpsPostService>();
 builder.Services.AddScoped<IUserService, HtttpsUserService>();
 builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
