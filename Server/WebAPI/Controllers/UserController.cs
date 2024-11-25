@@ -60,6 +60,29 @@ namespace WebAPI.Controllers
         }
 
         // Endpoint til at oprette en ny bruger
+       /*
+        [HttpPost]
+        public async Task<ActionResult<UserDTO>> AddUser([FromBody] User newUser)
+        {
+            try
+            {
+                if (newUser == null)
+                {
+                    return BadRequest("User data is required.");
+                }
+
+                await _userRepository.AddAsync(newUser);
+
+                var userDto = new UserDTO(newUser.Id, newUser.Username);
+                return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, userDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        */
+        
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(User user)
         {
@@ -80,6 +103,7 @@ namespace WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
 
         // Endpoint til at opdatere en eksisterende bruger baseret på dens ID
         [HttpPut("{id:int}")]

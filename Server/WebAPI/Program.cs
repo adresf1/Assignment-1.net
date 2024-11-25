@@ -1,5 +1,7 @@
+using EfcRepositories;
 using FileRepositories;
 using RepositoryContracts;
+using AppContext = System.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +11,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register Repository
-builder.Services.AddScoped<IPostRepository, PostFIleReposity>();
-builder.Services.AddScoped<IUserRepository, UserFileReposity>();
+builder.Services.AddScoped<IPostRepository, EfcPostRepository>();
+builder.Services.AddScoped<IUserRepository, EfcUserRepostory>();
 builder.Services.AddScoped<ICommentRepostory, CommentFileRepository>();
-
+builder.Services.AddDbContext<AppDbContext>();
 // tilføjer controllersne 
 builder.Services.AddControllers();
 

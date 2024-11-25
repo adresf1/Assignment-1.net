@@ -2,42 +2,36 @@
 @using ApiContracts
 @using BlazorApp12.Services
 @inject IPostService HttpsPostService
+@inject NavigationManager NavMgr
 <AuthorizeView>
     <Authorized>
         <PageTitle>Posts</PageTitle>
+
+        <!-- Logout button -->
+        <button @onclick="Logout">Log Out</button>
 
         <h1>All Posts</h1>
 
         @if (posts == null)
         {
-        <p>Loading posts...</p>
+            <p>Loading posts...</p>
         }
         else if (posts.Any())
         {
-        <ul>
-            @foreach (var post in posts)
-            {
-            <li>
-                <h4>@post.Title</h4>
-                <p>@post.Body</p>
-                <small>By User id: @post.userId</small>
-
-            </li>
-            }
-        </ul>
+            <ul>
+                @foreach (var post in posts)
+                {
+                    <li>
+                        <h4>@post.Title</h4>
+                        <p>@post.Body</p>
+                        <small>By User id: @post.userId</small>
+                    </li>
+                }
+            </ul>
         }
         else
         {
-        <p>No posts available.</p>
-        }
-
-        @code {
-        private List<PostsDTO>? posts;
-
-        protected override async Task OnInitializedAsync()
-        {
-        posts = await HttpsPostService.GetMany();
-        }
+            <p>No posts available.</p>
         }
     </Authorized>
     <NotAuthorized>
@@ -45,3 +39,18 @@
     </NotAuthorized>
 </AuthorizeView>
 
+@code {
+    private List<PostsDTO>? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await HttpsPostService.GetMany();
+    }
+
+
+    private void Logout()
+    {
+        throw new NotImplementedException();
+    }
+
+}
